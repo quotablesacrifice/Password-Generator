@@ -1,6 +1,36 @@
 import random
+import os
 
-what_password_for = input("What's this password for? ") #what service, app, etc. the password is for
+config_file = "config.txt"
+
+file_path = ""
+
+if os.path.exists(config_file):
+    try:
+        with open(config_file, 'r') as f:
+            file_path = f.read().strip()
+        print(f"Using saved password file path: {file_path}")
+    except IOError:
+        print(f"Error reading from {config_file} Please enter the path manually.")
+        file_path = input("Please enter the full file path for your passwords.txt here:")
+        try:
+            with open(config_file, 'w') as f:
+                f.write(file_path)
+            print(f"New pass word file path saved: {file_path}")
+        except IOError:
+            print(f"Error saving new file path to {config_file} the path will not be remebered.")
+
+else:
+    file_path = input("Before continuing, somewhere on your computer, please create a .txt document for your passwords to be stored in." \
+    "\nPlease enter the full file path for the .txt that you created: ")
+    try:
+        with open(config_file, 'w') as f:
+            f.write(file_path)
+        print(f"File path saved for future use: {file_path}")
+    except IOError:
+        print(f"Error saving the path to {config_file}. The path will not be remebered.")
+
+what_password_for = input("What's this password for? ") # what service, app, etc. the password is for
 
 print("Password: ")
 
@@ -12,10 +42,6 @@ for x in range(16): # 16 char password
 
 print(password)
 
-file_path = "your .txt path" # if you have an existing .txt, use an absolute path if .txt is in a different directoy from the script. 
-                                  # if .txt is in a parent directory for the folder the script is in, use '../' to go up one dir. can be used as many times as needed.
-                                  # if theres no existing .txt, a new one will be created within the same folder as the script
-
 try:
     with open(file_path, 'a') as file: # appends or creates a file then appends with future generated passwords
         file.write(what_password_for + ":\n" + password + "\n\n") # appends the file with the service name and the password
@@ -23,3 +49,5 @@ try:
 
 except IOError:
     print(f"An errer occured when attempting to write to the file: {file_path}") # append failed
+
+input("\nPress Enter to exit...")
